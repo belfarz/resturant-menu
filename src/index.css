@@ -1,13 +1,62 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+  font-family: "Inter", sans-serif;
+}
+nav{
+  box-shadow:0 .5rem 1rem rgba(0,0,0,.1);
+}
+.nav--logo{
+  height: 2rem;
+  width: 5rem; 
+}
+.cover{
+  background: url(./images/cover2.jpg) no-repeat center center;
+  background-size: cover;
+  height: 75vh;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.page{
+  height: 100%;
+}
+
+.btn {
+  display: inline-block;
+  border-radius: 12px;
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  background: rgb(230, 152, 7);
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+  width: 200px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+
+.food--card{
+ box-shadow:0 .5rem 1rem rgba(0,0,0,.1);
+}
+
+.selection{
+  display: inline-block;
+  border-radius: 12px;
+  margin: 4px;
+  background: rgb(230, 152, 7);
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+@media (max-width: 308px) {
+  nav .img{
+   
+  }
 }

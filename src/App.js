@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import "react-toastify/ReactToastify.css"
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import AnimatedRoute from "./components/AnimatedRoute";
+import Layout from "./components/Layout";
+import Buttons from "./components/Buttons";
+import Menu from "./components/Menu";
+import Home from "./components/Home";
+import { ToastContainer } from "react-toastify";
 
 function App() {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+        <Route path=":id" element={<Buttons />} />
+        <Route path=":id/menu" element={
+          <AnimatePresence mode="wait" >
+          <AnimatedRoute>
+            <Menu />
+          </AnimatedRoute>
+        </AnimatePresence>
+        } />
+      </Route>
+    )
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <RouterProvider router={router} />
+    <ToastContainer />
+    </>
   );
 }
 
