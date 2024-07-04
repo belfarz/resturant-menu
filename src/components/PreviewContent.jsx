@@ -6,7 +6,8 @@ export default function PreviewContent({ food, setOpen }) {
 
   const [count, setCount] = useState(1)
   const dispatch = useDispatch()
-  const addons = [];
+  const [addons, setAddons] = useState([]);
+  const [price, setPrice] = useState(food.price)
 
   const addToCart =()=>{
 
@@ -20,7 +21,7 @@ export default function PreviewContent({ food, setOpen }) {
       addOns: addons
     }
 
-     if (count > 1) {
+    if (count > 1) {
       let i = 1;
       while (i < count) {
         dispatch(addToOrder(order));
@@ -41,15 +42,17 @@ export default function PreviewContent({ food, setOpen }) {
 
   const handleCheckBox = (e, addon) => {
     if (e.target.checked === true) {
-      addons.push(addon)
+      setAddons([...addons, addon]);
+      setPrice(prev => prev + addon.price)
     } else {
-      addons.pop(addon)
+      setAddons(addons.filter(i => i !== addon));
+      setPrice(prev => prev - addon.price)
     }
   }
 
-  const test = food.addOns.map((addons) => (
-    <div className='m-4 flex justify-between'>
-      {addons.name}
+  const test = food.addOns.map((addons, index) => (
+    <div key={index} className='m-4 flex justify-between items-center'>
+      <div className=' flex flex-col'>{addons.name} <span className=' text-sm font-extralight'>${addons.price}</span></div>
       <input type="checkbox" onChange={(e) => handleCheckBox(e, addons)} />
     </div>
   ))
@@ -81,7 +84,7 @@ export default function PreviewContent({ food, setOpen }) {
           <span className=' m-3'>{count}</span>
           <span className=' m-3' onClick={increment}>+</span>
         </div>
-        <button className=' bg-orange-300 py-2 px-8 w-full rounded-xl' onClick={addToCart}>Add <span>$</span></button>
+        <button className=' bg-orange-300 py-2 px-8 w-full rounded-xl' onClick={addToCart}>Add <span>${price * count}</span></button>
       </div>
 
     </div>

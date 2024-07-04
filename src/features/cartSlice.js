@@ -25,7 +25,7 @@ const cartSlice = createSlice({
         },
         removeFromOrder: (state, action)=>{
             state.orders = state.orders.filter(x => x.orderId !== action.payload);
-            localStorage.setItem("ordes", JSON.stringify(state.orders))
+            localStorage.setItem("orders", JSON.stringify(state.orders))
             toast.error(
                 "removed from order",{
                 position : "bottom-center"

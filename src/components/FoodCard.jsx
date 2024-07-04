@@ -1,15 +1,10 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-// import { addToOrder } from '../features/cartSlice';
-
-import { removeFromOrder } from '../features/cartSlice';
 import PreviewModal from './PreviewModal';
 import PreviewContent from './PreviewContent';
 
 
 export default function FoodCard({ food }) {
     const [open, setOpen] = useState(false);
-    const dispatch = useDispatch();
 
     return (
         <>
@@ -27,7 +22,6 @@ export default function FoodCard({ food }) {
                         <span className=' text-xl'>${food.price}</span>
                     </div>
                     <span onClick={() => setOpen(true)} className=' bg-yellow-500 flex items-center justify-center w-full font-bold p-4'>Add to order</span>
-                    <span onClick={() => dispatch(removeFromOrder(food.id))}>remove</span>
                 </div>
             </div>
 
