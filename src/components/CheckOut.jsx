@@ -39,7 +39,7 @@ export default function CheckOut({ setOpen }) {
             </div>
 
             {totalCost > 0 ?
-                <div className=' flex items-center justify-center p-4 fixed bottom-0 left-0 right-0 pb-4 ' >
+                <div className=' flex items-center justify-center p-4 fixed bottom-10 left-0 right-0 pb-4 ' >
                     <div className=' flex shadow-2xl justify-between w-3/4  bg-orange-200 p-4 rounded-full'>
                         <span className=' text-lg'>Confirm Order</span>
                         <span className=' text-lg'>${totalCost.toFixed(2)}</span>
