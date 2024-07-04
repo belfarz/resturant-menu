@@ -31,32 +31,27 @@ export default function CheckoutCard({ order }) {
                 ><MdOutlineDeleteOutline className=' text-4xl text-red-500' /></span>
             </div>
             <div className='flex flex-col justify-center items-start p-6 w-full'>
-                <div className='flex justify-between w-full mb-2'>
-                    <div className='flex flex-col'>
-                        <span className=' text-xl font-normal'>{order.data.name}</span>
-                        <span className=' font-thin'>${order.data.price}</span>
-                    </div>
-                    <div className='border border-black flex items-center justify-around rounded-xl mb-4'>
-                        <span className=' mx-3 m-1' >-</span>
-                        <span className=' mx-3 m-1'>1</span>
-                        <span className=' mx-3 m-1' >+</span>
-                    </div>
+            
+                <div className='flex justify-between items-center w-full mb-2'>
+                <span className=' text-xl font-normal  '>{order.data.name}</span>
+                    <span className=' font-thin'>${order.data.price}</span>
+                   
                 </div>
             </div>
 
-           {addonsTotal > 0 ?
-             <div className=' w-full p-6 bg-orange-200 '>
-             <span className=' text-xl mb-2 block'>Your addons</span>
-             <hr />
-             {addons}
-             <hr />
-             <div className=' text-sm flex justify-between items-center my-1'>
-                 <span className=' text-xl' >Total</span>
-                 <span className=' text-lg'>${addonsTotal.toFixed(2)}</span>
-             </div>
+            {addonsTotal > 0 ?
+                <div className=' w-full p-6 bg-orange-200 '>
+                    <span className=' text-xl mb-2 block'>Your addons</span>
+                    <hr />
+                    {addons}
+                    <hr />
+                    <div className=' text-sm flex justify-between items-center my-1'>
+                        <span className=' text-xl' >Total</span>
+                        <span className=' text-lg'>${addonsTotal.toFixed(2)}</span>
+                    </div>
 
-         </div> : ""   
-        }
+                </div> : ""
+            }
         </div>
     )
 }

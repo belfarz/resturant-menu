@@ -23,7 +23,7 @@ export default function CheckOut({ setOpen }) {
     }, [orderItems]);
 
     return (
-        <div className={`w-full z-[9999]  ${orderItems.length > 1 ? 'h-fit' : 'h-full'}`} style={{ backgroundColor: "#F2E6D6" }}>
+        <div className={`w-full z-[9999]  ${orderItems.length > 1 ? 'h-fit' : 'h-full overflow-hidden'}`} style={{ backgroundColor: "#F2E6D6" }}>
             <div className=' flex p-6' style={{ backgroundColor: "#F2E6D6" }} >
                 <span onClick={() => setOpen(false)} className=' text-2xl mr-2 flex items-center justify-center'><FaTimes className=' font-bold text-2xl' /></span>
                 <span className=' font-semibold text-xl'>Orders</span>
@@ -31,22 +31,22 @@ export default function CheckOut({ setOpen }) {
             <hr className='bg-gray-600' />
             <div className='flex flex-wrap justify-center items-center pb-24 '>
                 {totalCost > 0 ?
-                orders :
-                <div className="h-screen flex items-center justify-center">
-                    <h1 className=' text-3xl'>no orders yet</h1>
-                </div>    
-            }
+                    orders :
+                    <div className="h-screen flex items-center justify-center">
+                        <h1 className=' text-3xl'>no orders yet</h1>
+                    </div>
+                }
             </div>
 
-            {totalCost > 0 ? 
-            <div className=' flex items-center justify-center p-4 fixed bottom-0 left-0 right-0 pb-4 ' >
-            <div className=' flex shadow-2xl justify-between w-3/4  bg-orange-200 p-4 rounded-full'>
-                <span className=' text-lg'>Confirm Order</span>
-                <span className=' text-lg'>${totalCost.toFixed(2)}</span>
-            </div>
-        </div>
-            : ""
-                
+            {totalCost > 0 ?
+                <div className=' flex items-center justify-center p-4 fixed bottom-5 left-0 right-0 pb-4 ' >
+                    <div className=' flex shadow-2xl justify-between w-3/4  bg-orange-200 p-4 rounded-full'>
+                        <span className=' text-lg'>Confirm Order</span>
+                        <span className=' text-lg'>${totalCost.toFixed(2)}</span>
+                    </div>
+                </div>
+                : ""
+
             }
         </div>
     )
