@@ -84,7 +84,7 @@ export default function PreviewContent({ food, setOpen }) {
           <span className=' m-3'>{count}</span>
           <span className=' m-3' onClick={increment}>+</span>
         </div>
-        <button className=' bg-orange-300 py-2 px-8 w-full rounded-xl' onClick={addToCart}>Add <span>${price * count}</span></button>
+        <button className=' bg-orange-300 py-2 px-8 w-full rounded-xl' onClick={addToCart}>Add <span>${(price * count).toFixed(2)}</span></button>
       </div>
 
     </div>

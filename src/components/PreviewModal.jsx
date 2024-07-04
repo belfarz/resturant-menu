@@ -57,7 +57,7 @@ const PreviewModal = ({ open, setOpen, children }) => {
               transition={{
                 ease: "easeInOut",
               }}
-              className="absolute bottom-0 h-[85vh] w-full overflow-hidden rounded-t-3xl "
+              className="absolute bottom-0 h-[75vh] w-full overflow-hidden rounded-t-3xl "
               style={{ y }}
               drag="y"
               dragControls={controls}
@@ -81,7 +81,7 @@ const PreviewModal = ({ open, setOpen, children }) => {
                   onPointerDown={(e) => {
                     controls.start(e);
                   }}
-                  className="h-2 w-14 cursor-grab touch-none rounded-full bg-neutral-700 active:cursor-grabbing"
+                  className="h-2 w-14 cursor-grab touch-none rounded-full bg-transparent active:cursor-grabbing"
                 ></button>
               </div>
               <div className="relative z-0 h-full overflow-y-scroll ">

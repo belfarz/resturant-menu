@@ -15,10 +15,13 @@ export default function CheckoutCard({ order }) {
     ))
 
     let addonsTotal = 0;
+
     // Inside your component function or useEffect
     order.data.addOns.forEach((addon) => {
         addonsTotal += addon.price;
     });
+
+    let foodtotal = addonsTotal + order.data.price
 
     return (
         <div className='food--card flex flex-col justify-center items-center w-full max-w-[600px] m-4'>
@@ -47,7 +50,7 @@ export default function CheckoutCard({ order }) {
                     <hr />
                     <div className=' text-sm flex justify-between items-center my-1'>
                         <span className=' text-xl' >Total</span>
-                        <span className=' text-lg'>${addonsTotal.toFixed(2)}</span>
+                        <span className=' text-lg'>${foodtotal.toFixed(2)}</span>
                     </div>
 
                 </div> : ""
