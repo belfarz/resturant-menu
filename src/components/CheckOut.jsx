@@ -23,7 +23,7 @@ export default function CheckOut({ setOpen }) {
     }, [orderItems]);
 
     return (
-        <div className={`w-full z-[9999]  ${orderItems.length > 1 ? 'h-fit' : 'h-full overflow-hidden'}`} style={{ backgroundColor: "#F2E6D6" }}>
+        <div className={`w-full z-[9999]  ${orderItems.length > 1 ? 'h-fit' : 'h-[100dvh] overflow-hidden'}`} style={{ backgroundColor: "#F2E6D6" }}>
             <div className=' flex p-6' style={{ backgroundColor: "#F2E6D6" }} >
                 <span onClick={() => setOpen(false)} className=' text-2xl mr-2 flex items-center justify-center'><FaTimes className=' font-bold text-2xl' /></span>
                 <span className=' font-semibold text-xl'>Orders</span>

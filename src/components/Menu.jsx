@@ -1,10 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import FoodCard from './FoodCard';
 import Header from './Header';
+import axios from 'axios';
 
 export default function Menu() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [sampleData, setSampleData] = useState([])
+
+  useEffect(()=>{
+    axios.get("http://localhost:3122/api/menu").then((response)=>{
+      setSampleData(response.data)
+      console.log(response.data)
+    }).catch((Error)=>{
+      console.log(Error)
+    })
+
+  },[])
   
   const sampledata = [
     {
@@ -206,7 +218,7 @@ export default function Menu() {
     <>
     <Header />
     <div className='mt-20'>
-      <div className='flex overflow-x-hidden mt-3 px-2'>
+      <div className='flex overflow-x-hidden mt-3 px-2 lg:px-[10%]'>
         <button
           className='selection px-6 py-2'
           onClick={() => setTypeFilter("type", null)}

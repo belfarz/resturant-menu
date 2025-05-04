@@ -13,12 +13,14 @@ import Buttons from "./components/Buttons";
 import Menu from "./components/Menu";
 import Home from "./components/Home";
 import { ToastContainer } from "react-toastify";
+import Kitchen from "./components/Kitchen";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="chef" element={<Kitchen />} />
         <Route path=":id" element={<Buttons />} />
         <Route path=":id/menu" element={
           <AnimatePresence mode="wait" >
