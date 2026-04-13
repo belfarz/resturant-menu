@@ -14,7 +14,7 @@ export default function Buttons() {
        className='btn mx-5 px-10'
        to={`${id}/menu`}
       >menu</NavLink>
-      <NavLink className='btn mx-5 px-10'>waiter</NavLink>
+      <NavLink className='btn mx-5 px-10'>Roomservice</NavLink>
     </div>
     </>
   )

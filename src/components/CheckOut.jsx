@@ -2,10 +2,28 @@ import React, { useEffect, useState } from 'react'
 import { FaTimes } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import CheckoutCard from './CheckoutCard';
+import { useParams } from 'react-router-dom';
 
 export default function CheckOut({ setOpen }) {
     const orderItems = useSelector(state => state.orders.orders)
     const [totalCost, setTotalCost] = useState(0)
+    const { id } = useParams();
+
+    const handleSubmit = async () => {
+        const payload = {
+            roomId: id,          // ✅ from URL
+            orders: orderItems.map(o => o.data),  // ✅ strip the orderId wrapper, send raw data
+        };
+
+        const res = await fetch('http://localhost:5000/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        console.log(data);
+    };
 
     const orders = orderItems.map((order, index) => (
         <CheckoutCard order={order} key={index} />
@@ -40,9 +58,9 @@ export default function CheckOut({ setOpen }) {
 
             {totalCost > 0 ?
                 <div className=' flex justify-center p-4 fixed bottom-0  left-0 right-0 pb-4 h-36' >
-                    <div className=' flex shadow-2xl justify-between w-3/4 h-16 bg-orange-200 p-4 rounded-full'>
-                        <span className=' text-lg'>Confirm Order</span>
-                        <span className=' text-lg'>${totalCost.toFixed(2)}</span>
+                    <div onClick={handleSubmit} className=' flex shadow-2xl justify-between w-3/4 h-16 px-6 bg-green-500 p-4 rounded-full'>
+                        <span className=' text-lg text-white'>Confirm Order</span>
+                        <span className=' text-lg text-white'>${totalCost.toFixed(2)}</span>
                     </div>
                 </div>
                 : ""

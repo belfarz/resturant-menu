@@ -12,7 +12,6 @@ export default function PreviewContent({ food, setOpen }) {
   const addToCart =()=>{
 
     const order = {
-      id: food.id,
       name: food.name,
       description: food.description,
       type: food.type,
