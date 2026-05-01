@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react'
+// import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import FoodCard from './FoodCard';
 import Header from './Header';
-import axios from 'axios';
+// import axios from 'axios';
 
 export default function Menu() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sampleData, setSampleData] = useState([])
+  // const [sampleData, setSampleData] = useState([])
 
-  useEffect(()=>{
-    axios.get("http://localhost:3122/api/menu").then((response)=>{
-      setSampleData(response.data)
-      console.log(response.data)
-    }).catch((Error)=>{
-      console.log(Error)
-    })
+  // useEffect(()=>{
+  //   axios.get("http://localhost:3122/api/menu").then((response)=>{
+  //     setSampleData(response.data)
+  //     console.log(response.data)
+  //   }).catch((Error)=>{
+  //     console.log(Error)
+  //   })
 
-  },[])
+  // },[])
   
   const sampledata = [
     {
