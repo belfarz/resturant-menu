@@ -20,7 +20,7 @@ function App() {
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="chef2" element={<AdminDashboard />} />
+        <Route path="/chef2" element={<AdminDashboard />} />
         <Route path="/room/:id" element={<Buttons />} />
         <Route path="/room/:id/menu" element={
           <AnimatePresence mode="wait" >
