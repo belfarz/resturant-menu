@@ -13,7 +13,6 @@ import Buttons from "./components/Buttons";
 import Menu from "./components/Menu";
 import Home from "./components/Home";
 import { ToastContainer } from "react-toastify";
-import OrdersPortal from "./components/OrdersPortal";
 import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
@@ -22,9 +21,8 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="chef2" element={<AdminDashboard />} />
-        <Route path="chef" element={<OrdersPortal />} />
-        <Route path=":id" element={<Buttons />} />
-        <Route path=":id/menu" element={
+        <Route path="/room/:id" element={<Buttons />} />
+        <Route path="/room/:id/menu" element={
           <AnimatePresence mode="wait" >
           <AnimatedRoute>
             <Menu />

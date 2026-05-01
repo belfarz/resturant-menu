@@ -11,6 +11,7 @@ export default function CheckOut({ setOpen }) {
 
     const handleSubmit = async () => {
         const payload = {
+            completed: "new",
             roomId: id,          // ✅ from URL
             orders: orderItems.map(o => o.data),  // ✅ strip the orderId wrapper, send raw data
         };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const BASE = "http://localhost:5000/api/v1";
 
@@ -58,8 +58,61 @@ function orderTotal(checkout) {
   );
 }
 
-// ── Modal ────────────────────────────────────────────────────────────────────
-function ItemModal({ item, onClose, onSave }) {
+// ── Confirm Modal ────────────────────────────────────────────────────────────────────
+function ConfirmModal({ isOpen, onClose, onConfirm, title, message }) {
+  if (!isOpen) return null;
+
+  return (
+   
+        <motion.div 
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          >
+          <motion.div 
+            className="bg-gray-900 rounded-xl p-6 w-full max-w-sm border border-gray-800"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+
+            <h2 className="text-white font-semibold text-lg mb-2">
+              {title || "Are you sure?"}
+            </h2>
+
+            <p className="text-gray-400 text-sm mb-4">
+              {message || "This action cannot be undone."}
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-sm rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => {
+                  onConfirm();
+                  onClose();
+                }}
+                className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700"
+              >
+                Confirm
+              </button>
+            </div>
+
+          </motion.div>
+        </motion.div>
+     
+  );
+}
+
+// ── Add Item Modal ────────────────────────────────────────────────────────────────────
+function ItemModal({ item, onClose, onSave, openConfirm }) {
   const [form, setForm] = useState({
     name: item?.name || "",
     description: item?.description || "",
@@ -89,6 +142,7 @@ function ItemModal({ item, onClose, onSave }) {
   };
 
   const handleSave = () => {
+
     onSave({
       ...form,
       price: parseFloat(form.price) || 0,
@@ -98,7 +152,10 @@ function ItemModal({ item, onClose, onSave }) {
           ...a,
           price: parseFloat(a.price) || 0
         })),
-    });
+    })
+
+  
+
   };
 
   const fields = [
@@ -109,8 +166,19 @@ function ItemModal({ item, onClose, onSave }) {
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-[440px] shadow-2xl max-h-[90vh] overflow-y-auto">
+    <motion.div
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}   
+     >
+      <motion.div 
+        className="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-[440px] shadow-2xl max-h-[90vh] overflow-y-auto"
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }} // 👈 EXIT animation
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-white font-semibold text-base">{item ? "Edit item" : "Add menu item"}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 text-2xl leading-none bg-transparent border-none cursor-pointer">×</button>
@@ -184,17 +252,25 @@ function ItemModal({ item, onClose, onSave }) {
           <button onClick={onClose} className="px-4 py-2 bg-transparent border border-gray-700 rounded-lg text-gray-400 text-sm cursor-pointer hover:bg-gray-800 transition-colors">
             Cancel
           </button>
-          <button onClick={handleSave} className="px-5 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm font-semibold cursor-pointer transition-colors border-none">
+          <button
+            onClick={() =>
+              openConfirm(
+                () => handleSave(),
+                `${item ? "save changes?" : "add item"}`,
+                `${item ? "This wil save all changes?" : "This will add new item"}`
+              )
+            }
+            className="px-5 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white text-sm font-semibold cursor-pointer transition-colors border-none">
             {item ? "Save changes" : "Add item"}
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
 // ── Orders Page ───────────────────────────────────────────────────────────────
-function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete, onDeclineOrder }) {
+function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete, onDeclineOrder, openConfirm }) {
   const [filter, setFilter] = useState("new");
 
   const filtered = orders.filter((o) => (filter === o.completed));
@@ -257,7 +333,7 @@ function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete
                     <div
                       key={i}
                       className={`bg-gray-800/60 rounded-lg p-3 flex flex-col flex-1 transition-all
-                              ${item.status === "decline" || checkout.completed === "decline"? " opacity-30 pointer-events-none" : ""}
+                              ${item.status === "decline" || checkout.completed === "decline" ? " opacity-30 pointer-events-none" : ""}
                             `}
                     >
                       <div className="flex justify-between items-center">
@@ -285,7 +361,13 @@ function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete
                       }
                       {checkout.completed === "new" &&
                         <button
-                          onClick={() => onDeclineOrder(checkout._id, item._id)}
+                          onClick={() =>
+                            openConfirm(
+                              () => onDeclineOrder(checkout._id, item._id),
+                              "Decline item?",
+                              "This will mark the item as declined."
+                            )
+                          }
                           className="mt-2 w-full py-1.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs font-semibold cursor-pointer hover:bg-red-500/20 transition-colors"
                         >
                           Decline
@@ -305,13 +387,25 @@ function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete
                   {checkout.completed === "new" ? (
                     <>
                       <button
-                        onClick={() => onMarkPending(checkout._id)}
+                        onClick={() =>
+                          openConfirm(
+                            () => onMarkPending(checkout._id),
+                            "Accept All Orders?",
+                            "This will mark all orders as accepted."
+                          )
+                        }
                         className="px-4 py-1.5 bg-blue-500/15 border border-blue-500/30 rounded-lg text-blue-400 text-xs font-semibold cursor-pointer hover:bg-blue-500/25 transition-colors"
                       >
                         Accept
                       </button>
                       <button
-                        onClick={() => onMarkDecline(checkout._id)}
+                        onClick={() =>
+                          openConfirm(
+                            () => onMarkDecline(checkout._id),
+                            "Decline All Orders?",
+                            "This will mark all orders as Declined."
+                          )
+                        }
                         className="px-4 py-1.5 bg-red-500/15 border border-red-500/30 rounded-lg text-red-400 text-xs font-semibold cursor-pointer hover:bg-red-500/25 transition-colors"
                       >
                         Decline
@@ -320,7 +414,13 @@ function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete
 
                   ) : checkout.completed === "pending" && (
                     <button
-                      onClick={() => onMarkDone(checkout._id)}
+                      onClick={() =>
+                        openConfirm(
+                          () => onMarkDone(checkout._id),
+                          "Mark All Orders Done?",
+                          "This will mark all orders as Done."
+                        )
+                      }
                       className="px-4 py-1.5 bg-green-500/15 border border-green-500/30 rounded-lg text-green-400 text-xs font-semibold cursor-pointer hover:bg-green-500/25 transition-colors"
                     >
                       Mark done
@@ -330,13 +430,13 @@ function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete
                   }
 
                   {
-                    checkout.completed === "new" ? "" :
-                      (<button
-                        onClick={() => onDelete(checkout._id)}
-                        className="px-4 py-1.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs font-semibold cursor-pointer hover:bg-red-500/20 transition-colors"
-                      >
-                        Delete
-                      </button>)
+                    // checkout.completed === "new" ? "" :
+                    //   (<button
+                    //     onClick={() => onDelete(checkout._id)}
+                    //     className="px-4 py-1.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs font-semibold cursor-pointer hover:bg-red-500/20 transition-colors"
+                    //   >
+                    //     Delete
+                    //   </button>)
                   }
                 </div>
               </div>
@@ -348,15 +448,15 @@ function OrdersPage({ orders, onMarkDone, onMarkPending, onMarkDecline, onDelete
   );
 }
 
-function MenuPage({ menuItems, onEdit, onDelete, onToggleAvailable }) {
+function MenuPage({ menuItems, onEdit, onDelete, onToggleAvailable, openConfirm }) {
   const [search, setSearch] = useState("");
 
   const filtered = search
     ? menuItems.filter(
-        (i) =>
-          i.name.toLowerCase().includes(search.toLowerCase()) ||
-          i.type.toLowerCase().includes(search.toLowerCase())
-      )
+      (i) =>
+        i.name.toLowerCase().includes(search.toLowerCase()) ||
+        i.type.toLowerCase().includes(search.toLowerCase())
+    )
     : menuItems;
 
   return (
@@ -371,73 +471,90 @@ function MenuPage({ menuItems, onEdit, onDelete, onToggleAvailable }) {
         <div className="text-center py-16 text-gray-600">No items found</div>
       ) : (
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))" }}>
-          {filtered.map((item) => (
-            <div key={item._id} className={`bg-gray-900 border rounded-xl overflow-hidden flex flex-col h-full transition-all ${
-              item.available === false ? "border-red-500/30 opacity-60" : "border-gray-800"
-            }`}>
-              {item.image ? (
-                <div className="w-full h-32 bg-gray-800 relative">
-                  <img src={item.image} alt={item.name} className="w-full h-32 object-cover"
-                    onError={(e) => (e.currentTarget.style.display = "none")} />
-                  {item.available === false && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <span className="text-red-400 text-xs font-bold uppercase tracking-widest">Unavailable</span>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="w-full h-32 bg-gray-800 flex items-center justify-center text-gray-600 text-xs">No image</div>
-              )}
 
-              <div className="p-4 flex flex-col flex-1">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="text-white font-semibold text-sm flex-1 truncate">{item.name}</div>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold shrink-0">{item.type}</span>
+          {filtered.map((item) => {
+            const itemTotal = item.price + item.addOns.reduce((a, x) => a + x.price, 0);
+            return (
+              <div key={item._id} className={`bg-gray-900 border rounded-xl overflow-hidden flex flex-col h-full transition-all ${item.available === false ? "border-red-500/30 opacity-60" : "border-gray-800"
+                }`}>
+                {item.image ? (
+                  <div className="w-full h-32 bg-gray-800 relative">
+                    <img src={item.image} alt={item.name} className="w-full h-32 object-cover"
+                      onError={(e) => (e.currentTarget.style.display = "none")} />
+                    {item.available === false && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <span className="text-red-400 text-xs font-bold uppercase tracking-widest">Unavailable</span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-full h-32 bg-gray-800 flex items-center justify-center text-gray-600 text-xs">No image</div>
+                )}
+
+                <div className="p-4 flex flex-col flex-1">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="text-white font-semibold text-sm flex-1 truncate">{item.name}</div>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold shrink-0">{item.type}</span>
+                    </div>
+
+                    <p className="text-gray-500 text-xs leading-relaxed mb-2 line-clamp-2">{item.description}</p>
+
+                    {item.addOns.length > 0 && (
+                      <div className="mb-3 flex flex-wrap gap-1">
+                        {item.addOns.map((a, i) => (
+                          <span key={i} className="text-xs text-gray-600 bg-gray-800 rounded px-2 py-0.5">
+                            {a.name} +${a.price.toFixed(2)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <p className="text-gray-500 text-xs leading-relaxed mb-2 line-clamp-2">{item.description}</p>
-
-                  {item.addOns.length > 0 && (
-                    <div className="mb-3 flex flex-wrap gap-1">
-                      {item.addOns.map((a, i) => (
-                        <span key={i} className="text-xs text-gray-600 bg-gray-800 rounded px-2 py-0.5">
-                          {a.name} +${a.price.toFixed(2)}
-                        </span>
-                      ))}
+                  <div className="flex flex-col gap-2 mt-auto">
+                    <div className="flex justify-between items-center">
+                      <div className="text-purple-400 font-bold text-base">${itemTotal.toFixed(2)}</div>
+                      <div className="flex gap-2">
+                        <button onClick={() => onEdit(item)}
+                          className="px-3 py-1 bg-purple-500/15 border border-purple-500/30 rounded-lg text-purple-400 text-xs font-semibold cursor-pointer hover:bg-purple-500/25 transition-colors">
+                          Edit
+                        </button>
+                        <button
+                          onClick={() =>
+                            openConfirm(
+                              () => onDelete(item._id),
+                              "Delete item?",
+                              "This will permanently Delete item"
+                            )
+                          }
+                          className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs font-semibold cursor-pointer hover:bg-red-500/20 transition-colors">
+                          Del
+                        </button>
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                <div className="flex flex-col gap-2 mt-auto">
-                  <div className="flex justify-between items-center">
-                    <div className="text-purple-400 font-bold text-base">${item.price.toFixed(2)}</div>
-                    <div className="flex gap-2">
-                      <button onClick={() => onEdit(item)}
-                        className="px-3 py-1 bg-purple-500/15 border border-purple-500/30 rounded-lg text-purple-400 text-xs font-semibold cursor-pointer hover:bg-purple-500/25 transition-colors">
-                        Edit
-                      </button>
-                      <button onClick={() => onDelete(item._id)}
-                        className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs font-semibold cursor-pointer hover:bg-red-500/20 transition-colors">
-                        Del
-                      </button>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => onToggleAvailable(item._id, item.available)}
-                    className={`w-full py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors border ${
-                      item.available === false
+                    <button
+                      onClick={() =>
+                        openConfirm(
+                          () => onToggleAvailable(item._id, item.available),
+                          `${item.available === false ? "Mark Item available" : "Mark Item unavailable"}`,
+                          `${item.available === false ? "Tis will Mark Item available" : "This will Mark Item unavailable"}`
+                        )
+                      }
+                      className={`w-full py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors border ${item.available === false
                         ? "bg-green-500/15 border-green-500/30 text-green-400 hover:bg-green-500/25"
                         : "bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
-                    }`}
-                  >
-                    {item.available === false ? "Mark available" : "Mark unavailable"}
-                  </button>
+                        }`}
+                    >
+                      {item.available === false ? "Mark available" : "Mark unavailable"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          }
+
+          )}
         </div>
       )}
     </div>
@@ -450,6 +567,12 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [modal, setModal] = useState(null);
+  const [confirmState, setConfirmState] = useState({
+    open: false,
+    action: null,
+    title: "",
+    message: ""
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -481,16 +604,16 @@ export default function AdminDashboard() {
   };
 
   const toggleAvailable = async (id, current) => {
-  const available = current === false ? true : false;
-  try {
-    await fetch(`${BASE}/updatemenuitem/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ available }),
-    });
-  } catch {}
-  setMenuItems((prev) => prev.map((i) => (i._id === id ? { ...i, available } : i)));
-};
+    const available = current === false ? true : false;
+    try {
+      await fetch(`${BASE}/updatemenuitem/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ available }),
+      });
+    } catch { }
+    setMenuItems((prev) => prev.map((i) => (i._id === id ? { ...i, available } : i)));
+  };
 
   const declineOrder = async (roomid, orderid) => {
     try { await fetch(`${BASE}/room/${roomid}/order/${orderid}`, { method: "PUT" }); } catch { }
@@ -536,12 +659,44 @@ export default function AdminDashboard() {
     setModal(null);
   };
 
-  const pending = orders.filter((o) => !o.completed).length;
+  const openConfirm = (action, title, message) => {
+    setConfirmState({
+      open: true,
+      action,
+      title,
+      message
+    });
+  };
+
+  const neworders = orders.reduce((acc, checkout) => {
+    if (checkout.completed !== "new") return acc;
+
+    return acc + checkout.orders.filter(
+      item => item.status === "accepted"
+    ).length;
+
+  }, 0);
+  const pending = orders.reduce((acc, checkout) => {
+    if (checkout.completed !== "pending") return acc;
+
+    return acc + checkout.orders.filter(
+      item => item.status === "accepted"
+    ).length;
+
+  }, 0);
+  const completed = orders.reduce((acc, checkout) => {
+    if (checkout.completed !== "done") return acc;
+
+    return acc + checkout.orders.filter(
+      item => item.status === "accepted"
+    ).length;
+
+  }, 0);
 
   const metrics = [
-    { label: "Total orders", value: orders.length },
-    { label: "Pending", value: pending, highlight: pending > 0 },
-    { label: "Completed", value: orders.filter((o) => o.completed).length },
+    { label: "New orders", value: neworders, highlight: "text-blue-500" },
+    { label: "Pending", value: pending, highlight: pending > 0 ? "text-amber-400" : "text-white" },
+    { label: "Completed", value: completed, highlight: "text-green-500" },
     { label: "Menu items", value: menuItems.length },
   ];
 
@@ -602,19 +757,31 @@ export default function AdminDashboard() {
           {metrics.map(({ label, value, highlight }) => (
             <div key={label} className="bg-gray-900 border border-gray-800 rounded-xl px-5 py-4">
               <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5">{label}</div>
-              <div className={`text-2xl font-bold ${highlight ? "text-amber-400" : "text-white"}`}>{value}</div>
+              <div className={`text-2xl font-bold ${highlight}`}>{value}</div>
             </div>
           ))}
         </div>
 
         {/* Content */}
         <div className="flex-1 px-7 py-5 overflow-y-auto">
-          {page === "orders" && <OrdersPage orders={orders} onMarkDone={markDone} onMarkPending={markPending} onMarkDecline={markDecline} onDeclineOrder={declineOrder} />}
-          {page === "menu" && <MenuPage menuItems={menuItems} onEdit={(item) => setModal({ item })} onToggleAvailable={toggleAvailable} onDelete={deleteMenuItem} />}
+          {page === "orders" && <OrdersPage orders={orders} onMarkDone={markDone} onMarkPending={markPending} onMarkDecline={markDecline} onDeclineOrder={declineOrder} openConfirm={openConfirm} />}
+          {page === "menu" && <MenuPage menuItems={menuItems} onEdit={(item) => setModal({ item })} onToggleAvailable={toggleAvailable} onDelete={deleteMenuItem} openConfirm={openConfirm} />}
         </div>
       </div>
 
-      {modal && <ItemModal item={modal.item} onClose={() => setModal(null)} onSave={saveItem} />}
+      <AnimatePresence>
+        {modal && <ItemModal item={modal.item} onClose={() => setModal(null)} onSave={saveItem} openConfirm={openConfirm} />}8
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {confirmState.open && <ConfirmModal
+        isOpen={confirmState.open}
+        title={confirmState.title}
+        message={confirmState.message}
+        onClose={() => setConfirmState(prev => ({ ...prev, open: false }))}
+        onConfirm={confirmState.action}
+      />}
+      </AnimatePresence>
     </div>
   );
 }
